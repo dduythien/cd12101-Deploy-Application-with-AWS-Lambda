@@ -12,7 +12,7 @@ export function NewTodoInput({ onNewTodo }) {
   const onTodoCreate = async (event) => {
     try {
       const accessToken = await getAccessTokenSilently({
-        audience: `https://test-endpoint.auth0.com/api/v2/`,
+        audience: process.env.REACT_APP_AUTH0_AUDIENCE,
         scope: 'write:todos'
       })
       const dueDate = calculateDueDate()
@@ -20,6 +20,8 @@ export function NewTodoInput({ onNewTodo }) {
         name: newTodoName,
         dueDate
       })
+
+      console.log('new TODO: ', createTodo)
       onNewTodo(createdTodo)
     } catch (e) {
       console.log('Failed to created a new TODO', e)

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { getTodos, createTodo, updateTodo, deleteTodo, updateTodoImage } from '../dataLayer/todosAccess.mjs';
+import { getTodos, createTodo, updateTodo, deleteTodo, updateTodoImage, checkHasExistedTodo } from '../dataLayer/todosAccess.mjs';
 import { generateImageUrl } from '../fileStorage/attachmentUtils.mjs';
 const getTodosAction = async (userId) => {
   const result = await getTodos(userId);
@@ -7,21 +7,30 @@ const getTodosAction = async (userId) => {
 }
 
 const createTodoAction = async (userId, item) => {
+  // const checkExistedTodo = await checkHasExistedTodo(userId, item.name);
+  // console.log('checkExistedTodo: ', checkExistedTodo)
+  // if (checkExistedTodo) {
+  //   throw new Error('That todo already exists')
+  // }
+  const createdAt = new Date().toISOString();
   const newTodo = {
     ...item,
     userId,
-    todoId: uuidv4()
+    todoId: uuidv4(),
+    createdAt
   }
   const result = await createTodo(newTodo);
   return result;
 }
 
-const updateTodoAction = async (todoId, item) => {
-  await updateTodo(todoId, item);
+
+
+const updateTodoAction = async (userId, todoId, item) => {
+  await updateTodo(userId, todoId, item);
 }
 
-const deleteTodoAction = async (todoId) => {
-  await deleteTodo(todoId);
+const deleteTodoAction = async (userId, todoId) => {
+  await deleteTodo(userId, todoId);
 }
 
 const uploadImageAction = async (todoId, image) => {
@@ -37,10 +46,10 @@ const uploadImageAction = async (todoId, image) => {
   }
 }
 
-const generateImageUrlAction = async (todoId) => {
+const generateImageUrlAction = async (userId, todoId) => {
   const imageId = uuidv4()
   const { presignedUrl, imageUrl } = await generateImageUrl(imageId);
-  await updateTodoImage(todoId, imageUrl);
+  await updateTodoImage(userId, todoId, imageUrl);
   return presignedUrl
 }
 

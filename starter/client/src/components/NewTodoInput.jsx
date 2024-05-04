@@ -25,7 +25,8 @@ export function NewTodoInput({ onNewTodo }) {
       onNewTodo(createdTodo)
     } catch (e) {
       console.log('Failed to created a new TODO', e)
-      alert('Todo creation failed')
+      const message = e.response?.data?.message || 'Todo creation failed'
+      alert(message)
     }
   }
 

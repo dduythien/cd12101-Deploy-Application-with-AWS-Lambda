@@ -12,8 +12,10 @@ export const handler = middy()
     })
   )
   .handler(async (event) => {
+    const userId = getUserId(event);
+
     const todoId = event.pathParameters.todoId;
-    const uploadUrl = await generateImageUrlAction(todoId);
+    const uploadUrl = await generateImageUrlAction(userId, todoId);
     return JSON.stringify({
       uploadUrl
     })
